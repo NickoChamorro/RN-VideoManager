@@ -1,7 +1,7 @@
 import { Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-function GoToButton({ screenName, text }) {
+function GoToButton({ screenName, text, params }) {
     const navigation = useNavigation();
 
     return (

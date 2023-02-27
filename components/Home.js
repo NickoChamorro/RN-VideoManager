@@ -9,6 +9,8 @@ export default function Home() {
                 This app allows you to make recordings, share or save them. Enjoy it!
             </Text>  
             <GoToButton screenName='Camera' text='record'/>
+            <View style={styles.separator}/>
+            <GoToButton screenName='Videos' text='show video'/>
         </View>
     );
 };
@@ -28,4 +30,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    separator: {
+        height: 12
+    }
 });    

@@ -4,9 +4,8 @@ import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library'; 
+import axios from 'axios';
 /*import * as FileSystem from 'expo-file-system';*/
-
-
 
 export default function UseCamera() {
     let cameraRef = useRef();
@@ -15,6 +14,13 @@ export default function UseCamera() {
     const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
     const [isRecording, setIsRecording] = useState(false);
     const [video, setVideo] = useState();
+    const CONFIGHEADER = {
+        headers:{
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Access-Control-Allow-Origin': '*' 
+            /* 'Content-Type': 'multipart/form-data' */
+        }
+    };
 
     useEffect(() => {
         (async () => {
@@ -64,27 +70,32 @@ export default function UseCamera() {
             /* MediaLibrary.saveToLibraryAsync(video.uri).then(() => {
             setVideo(undefined);
             }); */
-            const uri = video.uri;
-            const formData = new FormData();
-            formData.append('video', {
-                uri,
-                name: 'video.mp4',
-                type: 'video/mp4',
-            });
 
             try {
-                const response = await fetch('https://example.com/upload-video', {
+                
+                const formData = new FormData();
+                formData.append('video', {
+                    uri: video.uri,
+                    name: video.name, // 'video.mp4'
+                    type: video.type // 'video/mp4'
+                });
+                
+                const response = await axios.post('https://videomanagerapi-production.up.railway.app/videos', {thumb: formData});
+                
+                /* const response = await axios.get('https://videomanagerapi-production.up.railway.app/');
+                Alert.alert(`Response: ${response.data.message}`); */
+
+                /*
+                const response = await fetch('https://videomanagerapi-production.up.railway.app/upload', {
                     method: 'POST',
                     body: formData,
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                if (response.ok) {
-                    Alert.alert('Video uploaded successfully');
-                } else {
-                    Alert.alert('Failed to upload video');
-                }
+                */
+                Alert.alert(`${response.data.message}`);
+
             } catch (error) {
                 Alert.alert(error);
             } finally {
@@ -103,7 +114,9 @@ export default function UseCamera() {
             />
             <View style={styles.buttonContainers}>
                 <Button title="Share" onPress={shareVideo} />
+                <View style={styles.separator}/>
                 {hasMediaLibraryPermission ? <Button title="Upload" onPress={uploadVideo} /> : undefined}
+                <View style={styles.separator}/>
                 <Button title="Discard" onPress={() => setVideo(undefined)} />
             </View>
         </SafeAreaView>
@@ -136,5 +149,8 @@ const styles = StyleSheet.create({
     video: {
         flex: 1,
         alignSelf: "stretch"
+    },
+    separator: {
+        width: 3
     }
 });
