@@ -23,8 +23,10 @@ export default function SaveVideos() {
     const getVideo = async () => {
         try {
             const response = await axios.get('https://videomanagerapi-production.up.railway.app/videos/5', CONFIGHEADER);
-            const blob = new Blob([response.data.uri], { type: 'video/mp4' });
+            /* return response.data.thumb; */
+            const blob = new Blob([response.data.thumb], { type: 'video/mp4' });
             const dataUri = await blobToDataUri(blob);
+            /* return dataUri; */
             setVideoUri(dataUri);
     
         } catch (error) {
@@ -42,6 +44,30 @@ export default function SaveVideos() {
             reader.readAsDataURL(blob);
         });
     };
+
+   /*  useEffect(() => {
+        (async () => {
+            const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
+            setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
+        })();    
+    }, []);  */   
+
+    /* const video = getVideo(); */
+    
+    /* const saveVideo = async () => { */
+        /* let video = await require('../assets/prueba.mp4');  
+        let videoUri = await Image.resolveAssetSource(video).uri;*/
+
+        /* const videoUri = await getVideo(); */
+
+        /*
+        MediaLibrary.createAssetAsync(videoUri).then(() => { // createAssetAsync saveToLibraryAsync
+            Alert.alert("Estas siendo saludado")
+        }).catch((error)=>{
+            Alert.alert(videoUri);
+        });
+        */
+    /* }    */ 
 
     return (
         <View style={styles.container}>

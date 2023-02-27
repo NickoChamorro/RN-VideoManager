@@ -14,6 +14,13 @@ export default function UseCamera() {
     const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
     const [isRecording, setIsRecording] = useState(false);
     const [video, setVideo] = useState();
+    const CONFIGHEADER = {
+        headers:{
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Access-Control-Allow-Origin': '*' 
+            /* 'Content-Type': 'multipart/form-data' */
+        }
+    };
 
     useEffect(() => {
         (async () => {
@@ -60,29 +67,40 @@ export default function UseCamera() {
         };
 
         let uploadVideo = async () => {
+            /* MediaLibrary.saveToLibraryAsync(video.uri).then(() => {
+            setVideo(undefined);
+            }); */
+
             try {
-                const uri = video.uri; 
-                const name = 'video'; // uri.split('/').pop()
-                const type = 'video/mp4';
-                const size = 1 ;
+                
                 const formData = new FormData();
                 formData.append('video', {
-                    uri,
-                    name,
-                    type, 
-                    size
-                }); 
-            
-                const response = await axios.post('https://videomanagerapi-production.up.railway.app/upload', formData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data'
-                  }
-                }); 
-            
-                Alert.alert(response.data); 
+                    uri: video.uri,
+                    name: video.name, // 'video.mp4'
+                    type: video.type // 'video/mp4'
+                });
+                
+                const response = await axios.post('https://videomanagerapi-production.up.railway.app/videos', {thumb: formData});
+                
+                /* const response = await axios.get('https://videomanagerapi-production.up.railway.app/');
+                Alert.alert(`Response: ${response.data.message}`); */
+
+                /*
+                const response = await fetch('https://videomanagerapi-production.up.railway.app/upload', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                */
+                Alert.alert(`${response.data.message}`);
+
             } catch (error) {
                 Alert.alert(error);
-            }
+            } finally {
+                setVideo(undefined);
+            };
         };
 
         return (
