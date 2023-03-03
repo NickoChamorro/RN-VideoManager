@@ -76,18 +76,18 @@ export default function UseCamera() {
 
                 console.log(`uploadVideo - despues de formData`);
             
-                const response = await axios.post('https://videomanagerapi-production.up.railway.app/videos/upload', formData, {
-                  headers: {
-                    Accept: 'application/json', 
-                    'Content-Type': 'multipart/form-data'
-                  }
+                const response = await axios.post('http://44.211.156.25:443/videos/upload', formData, { 
+                    headers: {
+                        Accept: 'application/json', 
+                        'Content-Type': 'multipart/form-data'
+                    }
                 }); 
 
                 console.log(`uploadVideo - despues de Post a backend`);
             
-                Alert.alert(response.message); 
+                Alert.alert(response.data.message); 
             } catch (error) {
-                Alert.alert(error);
+                Alert.alert(error.message);
             }
         };
 

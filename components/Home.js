@@ -10,7 +10,7 @@ export default function Home() {
             </Text>  
             <GoToButton screenName='Camera' text='record'/>
             <View style={styles.separator}/>
-            <GoToButton screenName='Videos' text='nothing'/>
+            {/* <GoToButton screenName='Videos' text='nothing'/> */}
         </View>
     );
 };
