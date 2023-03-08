@@ -5,6 +5,8 @@ import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library'; 
 import axios from 'axios';
+import { storeData } from './LocalStorage.js';
+import { URLSERVER } from './Config.js';
 /*import * as FileSystem from 'expo-file-system';*/
 
 export default function UseCamera() {
@@ -76,7 +78,7 @@ export default function UseCamera() {
 
                 console.log(`uploadVideo - despues de formData`);
             
-                const response = await axios.post('http://44.211.156.25:443/videos/upload', formData, { 
+                const response = await axios.post(`${URLSERVER}upload`, formData, { 
                     headers: {
                         Accept: 'application/json', 
                         'Content-Type': 'multipart/form-data'
@@ -85,7 +87,13 @@ export default function UseCamera() {
 
                 console.log(`uploadVideo - despues de Post a backend`);
             
-                Alert.alert(response.data.message); 
+                let ResComplete = response.data.message;
+                let messageRes = ResComplete.split('!').shift()
+                let idRes = ResComplete.split('!').pop() 
+
+                storeData(idRes); 
+
+                Alert.alert(messageRes);
             } catch (error) {
                 Alert.alert(error.message);
             }

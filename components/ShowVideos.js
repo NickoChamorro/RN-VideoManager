@@ -1,56 +1,47 @@
-import axios from 'axios';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { Video } from 'expo-av';
+import axios from 'axios';
+import { STOREVIDEO, URLSERVER } from './Config.js';
 /* import * as MediaLibrary from 'expo-media-library'; */
-/* import { Image } from 'react-native'; */
 
 export default function ShowVideos() {
     /* const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState(); */
-    const [videoUri, setVideoUri] = useState(null);
+    /* const [videoData, setVideoData] = useState(''); */
+    const [videoURL, setVideoURL] = useState('');
 
     const CONFIGHEADER = {
         headers:{
-            'Content-Type': 'application/json;charset=UTF-8',
             'Access-Control-Allow-Origin': '*'
         }
     };
     
     const getVideo = async () => {
         try {
-            const response = await axios.get('http://44.211.156.25:443/videos/1', CONFIGHEADER);
-            const blob = new Blob([response.data.uri], { type: 'video/mp4' });
-            const dataUri = await blobToDataUri(blob);
-            setVideoUri(dataUri);
-    
+            console.log("entra al tryhardeando");
+            /* const idVideo = getData();*/
+            let urlGet = `${URLSERVER}last`; 
+            const response = await axios.get(urlGet, CONFIGHEADER);
+            console.log(response.data[0]["name"]);
+            setVideoURL(`${STOREVIDEO}${response.data[0]["name"]}`);  
+            
         } catch (error) {
             Alert.alert(error);
         } ;
     }; 
-    
-    const blobToDataUri = (blob) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onerror = reject;
-            reader.onload = () => {
-                resolve(reader.result);
-            };
-            reader.readAsDataURL(blob);
-        });
-    };
 
     return (
         <View style={styles.container}>
-          {videoUri && (
+          {videoURL && (
             <Video
-              source={{ uri: videoUri }}
+              source={{ uri: videoURL }}
               style={styles.video}
               useNativeControls
               resizeMode="contain"
             />
           )}
-          {!videoUri && (
+          {!videoURL && (
             <Button title="Load Video" onPress={getVideo}/>
           )}
         </View>
@@ -65,7 +56,7 @@ const styles = StyleSheet.create({
     },
     video: {
       width: '100%',
-      height: 300,
+      height: 600,
     }
   });
 
